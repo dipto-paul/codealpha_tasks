@@ -3,7 +3,14 @@ import '../data/flashcard_data.dart';
 import '../models/flashcard_model.dart';
 
 class AddFlashcardScreen extends StatefulWidget {
-  const AddFlashcardScreen({super.key});
+  final int? editIndex;
+  final VoidCallback? onSaved;
+
+  const AddFlashcardScreen({
+    super.key,
+    this.editIndex,
+    this.onSaved,
+  });
 
   @override
   State<AddFlashcardScreen> createState() => _AddFlashcardScreenState();
@@ -16,38 +23,66 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
   final TextEditingController answerController =
   TextEditingController();
 
-  void addFlashcard() {
-    if (questionController.text.isEmpty ||
-        answerController.text.isEmpty) {
+  bool get isEditing => widget.editIndex != null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (isEditing) {
+      final flashcard = flashcards[widget.editIndex!];
+
+      questionController.text = flashcard.question;
+      answerController.text = flashcard.answer;
+    }
+  }
+
+  void saveFlashcard() {
+    if (questionController.text.trim().isEmpty ||
+        answerController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please enter question and answer"),
         ),
       );
+
       return;
     }
 
-    flashcards.add(
-      Flashcard(
-        question: questionController.text,
-        answer: answerController.text,
-      ),
-    );
+    if (isEditing) {
+      flashcards[widget.editIndex!] = Flashcard(
+        question: questionController.text.trim(),
+        answer: answerController.text.trim(),
+      );
 
-    questionController.clear();
-    answerController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Flashcard updated successfully"),
+        ),
+      );
+    } else {
+      flashcards.add(
+        Flashcard(
+          question: questionController.text.trim(),
+          answer: answerController.text.trim(),
+        ),
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Flashcard added successfully"),
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Flashcard added successfully"),
+        ),
+      );
+    }
+
+    widget.onSaved?.call();
   }
 
   @override
   void dispose() {
     questionController.dispose();
     answerController.dispose();
+
     super.dispose();
   }
 
@@ -57,7 +92,9 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
       backgroundColor: const Color(0xFFF5F3FF),
 
       appBar: AppBar(
-        title: const Text("Add Flashcard"),
+        title: Text(
+          isEditing ? "Edit Flashcard" : "Add Flashcard",
+        ),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
@@ -103,11 +140,18 @@ class _AddFlashcardScreenState extends State<AddFlashcardScreen> {
               height: 55,
 
               child: ElevatedButton.icon(
-                onPressed: addFlashcard,
-                icon: const Icon(Icons.add),
-                label: const Text(
-                  "Add Flashcard",
-                  style: TextStyle(
+                onPressed: saveFlashcard,
+
+                icon: Icon(
+                  isEditing ? Icons.save : Icons.add,
+                ),
+
+                label: Text(
+                  isEditing
+                      ? "Update Flashcard"
+                      : "Add Flashcard",
+
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),

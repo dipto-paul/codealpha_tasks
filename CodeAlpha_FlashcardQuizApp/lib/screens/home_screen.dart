@@ -13,7 +13,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+
   int selectedTab = 0;
+
 
   int currentCardIndex = 0;
 
@@ -23,11 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return flashcards[currentCardIndex];
   }
 
+
   void showTheAnswer() {
     setState(() {
       showAnswer = true;
     });
   }
+
 
   void nextFlashcard() {
     if (currentCardIndex < flashcards.length - 1) {
@@ -38,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   void previousFlashcard() {
     if (currentCardIndex > 0) {
       setState(() {
@@ -47,15 +52,108 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
+  Future<void> editFlashcard() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddFlashcardScreen(
+          editIndex: currentCardIndex,
+        ),
+      ),
+    );
+
+    if (result == true) {
+      setState(() {
+        showAnswer = false;
+      });
+    }
+  }
+
+
+  void deleteFlashcard() {
+
+    showDialog(
+      context: context,
+
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete Flashcard?"),
+
+          content: const Text(
+            "Are you sure you want to delete this flashcard?",
+          ),
+
+          actions: [
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+
+              child: const Text("Cancel"),
+            ),
+
+            TextButton(
+              onPressed: () {
+
+                setState(() {
+
+                  flashcards.removeAt(currentCardIndex);
+
+                  if (flashcards.isEmpty) {
+                    currentCardIndex = 0;
+                  } else if (
+                  currentCardIndex >= flashcards.length) {
+                    currentCardIndex = flashcards.length - 1;
+                  }
+
+                  showAnswer = false;
+                });
+
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Flashcard deleted successfully",
+                    ),
+                  ),
+                );
+              },
+
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
       body: selectedTab == 0
           ? buildFlashcardScreen()
-          : const AddFlashcardScreen(),
+          : AddFlashcardScreen(
+        onSaved: () {
+          setState(() {
+            selectedTab = 0;
+            currentCardIndex = flashcards.length - 1;
+            showAnswer = false;
+          });
+        },
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
+
         currentIndex: selectedTab,
 
         onTap: (index) {
@@ -65,6 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
 
         items: const [
+
           BottomNavigationBarItem(
             icon: Icon(Icons.style),
             label: "Flashcards",
@@ -80,7 +179,68 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildFlashcardScreen() {
+
+    if (flashcards.isEmpty) {
+      return Scaffold(
+
+        appBar: AppBar(
+          title: const Text("Flashcard Quiz"),
+          centerTitle: true,
+          backgroundColor: Colors.deepPurple,
+          foregroundColor: Colors.white,
+        ),
+
+        backgroundColor: const Color(0xFFF5F3FF),
+
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+
+              const Icon(
+                Icons.style_outlined,
+                size: 80,
+                color: Colors.deepPurple,
+              ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "No Flashcards Available",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              const Text(
+                "Add a new flashcard to start learning.",
+              ),
+
+              const SizedBox(height: 25),
+
+              ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    selectedTab = 1;
+                  });
+                },
+
+                icon: const Icon(Icons.add),
+
+                label: const Text("Add Flashcard"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
+
       backgroundColor: const Color(0xFFF5F3FF),
 
       appBar: AppBar(
@@ -100,6 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             Text(
               "Card ${currentCardIndex + 1} / ${flashcards.length}",
+
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -112,7 +273,12 @@ class _HomeScreenState extends State<HomeScreen> {
             FlashcardWidget(
               flashcard: currentFlashcard,
               showAnswer: showAnswer,
+
               onShowAnswer: showTheAnswer,
+
+              onEdit: editFlashcard,
+
+              onDelete: deleteFlashcard,
             ),
 
             const SizedBox(height: 30),
