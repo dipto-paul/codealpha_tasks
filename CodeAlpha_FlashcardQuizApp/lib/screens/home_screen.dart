@@ -13,10 +13,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  // Bottom Navigation এর জন্য
   int selectedTab = 0;
 
-  // Flashcard এর জন্য
   int currentCardIndex = 0;
 
   bool showAnswer = false;
