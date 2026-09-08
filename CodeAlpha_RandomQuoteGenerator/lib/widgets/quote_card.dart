@@ -20,6 +20,7 @@ class QuoteCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
+
           BoxShadow(
             blurRadius: 10,
             color: Colors.black12,
