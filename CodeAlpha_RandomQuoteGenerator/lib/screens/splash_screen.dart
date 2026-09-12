@@ -18,12 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Timer(
-      const Duration(seconds: 3),
-          () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+      Duration(seconds: 3), () {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),
           ),
         );
       },
@@ -33,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF16002B),
+      backgroundColor: Color(0xFF16002B),
 
       body: Center(
         child: Column(
@@ -68,12 +64,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
             const SizedBox(height: 35),
 
-            const SizedBox(
-              width: 35,
-              height: 35,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
+            SizedBox(
+              width: 180,
+              child: LinearProgressIndicator(
+                minHeight: 5,
                 color: Colors.amber,
+                backgroundColor: Colors.white24,
               ),
             ),
           ],
