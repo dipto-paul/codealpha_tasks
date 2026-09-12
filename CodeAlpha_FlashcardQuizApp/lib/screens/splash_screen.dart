@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             SizedBox(height: 35),
 
-            const SizedBox(
+            SizedBox(
               width: 180,
               child: LinearProgressIndicator(
                 minHeight: 5,
