@@ -5,7 +5,7 @@ import '../models/workout_model.dart';
 import 'add_workout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Workout> workouts = [];
+
+  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -41,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result == true) {
       loadWorkouts();
     }
+
+    setState(() {
+      selectedIndex = 0;
+    });
   }
 
   Future<void> openEditWorkout(Workout workout) async {
@@ -57,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
       loadWorkouts();
     }
   }
-
   Future<void> deleteWorkout(int id) async {
     await DatabaseHelper.instance.deleteWorkout(id);
     loadWorkouts();
@@ -72,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
       ),
+
       body: workouts.isEmpty
           ? const Center(
         child: Text(
@@ -128,10 +134,34 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: openAddWorkout,
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: selectedIndex,
+        selectedItemColor: Colors.white,
         backgroundColor: Colors.deepPurple,
-        child: Icon(Icons.add, color: Colors.white,),
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+
+        onTap: (index) {
+          if (index == 0) {
+            setState(() {
+              selectedIndex = 0;
+            });
+          } else if (index == 1) {
+            openAddWorkout();
+          }
+        },
+
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Add Workout',
+          ),
+        ],
       ),
     );
   }
