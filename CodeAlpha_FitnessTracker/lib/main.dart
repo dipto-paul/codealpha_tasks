@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class FitnessTrackerApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
         useMaterial3: true,
       ),
-      home:  HomeScreen(),
+      home:  SplashScreen(),
     );
   }
 }

@@ -5,7 +5,7 @@ import '../models/workout_model.dart';
 import 'add_workout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: openAddWorkout,
         backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white,),
       ),
     );
   }
