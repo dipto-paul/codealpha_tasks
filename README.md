@@ -2,8 +2,8 @@
 
 <p align="center">
 
-<strong>{=html}Track your movement. Build healthy habits. Become your
-best self.</strong>{=html}
+<strong>Track your movement. Build healthy habits. Become your
+best self.</strong>
 
 </p>
 
@@ -163,11 +163,7 @@ Adjust the structure to match your actual project folders.
 
 1. Clone the Repository
 
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME.git
-
 2. Open the Project
-
-cd YOUR_REPOSITORY_NAME
 
 3. Install Dependencies
 
